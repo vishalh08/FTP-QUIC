@@ -4,48 +4,55 @@
 
 This project is all about a FTP using QUIC made with Rust.
 
+# Features
+
+- Adopts a multi-client single-server architecture.
+- Employs QUIC for efficient text transmission.
+- Ensures secure communication through the use of TLS encryption certificates.
+- Verifies the integrity of files using checksums.
+- Facilitates both uploading and downloading of files.
+
 # Requirements
 
-Install Rust (https://www.youtube.com/watch?v=enk0o7eWNsc), you can follow the video for installation process.
+Install Rust
 
-Install OpenSSL (https://slproweb.com/products/Win32OpenSSL.html)
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
 
-# Setup
+Install OpenSSL
 
-clone the repository
+```bash
+sudo apt update
+sudo apt install openssl
+```
 
-git clone https://github.com/vishalh08/FTP-QUIC.git
+# Certificates
 
-Generate the following,
-
-Generate CA key
-
-openssl genrsa -out ca.key 4096
-
-Generate CA certificate
-
-openssl req -new -x509 -key ca.key -sha256 -days 365 -out ca.cert -subj "/C=US/ST=PHL/O=Drexel-University"
-
-Generate the server key
-
-openssl genrsa -out server.key 4096
-
-Generate the CSR (Certificate Signing Request)
-
-openssl req -new -key server.key -out server.csr -config certificate.conf
-
-Generate the server certificate signed by the CA
-
-openssl x509 -req -in server.csr -CA ca.cert -CAkey ca.key -CAcreateserial -out server.crt -days 365 -sha256 -extfile certificate.conf -extensions req_ext
+The certs directory already includes the keys and certificates that I’ve generated for both the client and server.
 
 # Running the Code
 
-command to run server
+Steps
+
+```bash
+git clone https://github.com/vishalh08/FTP-QUIC.git
+
+cd FTP-QUIC
+
+# Run server from the FTP-QUIC directory where the git directory is cloned
 
 cargo run -- server --cert ./certs/server.crt --key ./certs/server.key
 
-command to run client
+# Run client from the FTP-QUIC directory where the git directory is cloned (use separate terminal)
 
-cargo run --bin quicrs -- client --address 127.0.0.1 --cert ./certs/ca.cert
+cargo run --bin quicrs -- client --address 127.0.0.1 --port 54321 --cert ./certs/ca.cert
+```
 
-https://youtu.be/1BJ5SHsx2hk
+# Extra Credits
+
+- Used systems programming language (Rust)
+- Uploaded the source code on GitHub
+- Video demo of the FTP over QUIC protocol ([Watch Here](https://youtu.be/1BJ5SHsx2hk))
+- Handing multiple clients by creating a new task for each accepted connection.
+- Included a learning summary
