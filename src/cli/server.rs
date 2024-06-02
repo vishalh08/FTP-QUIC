@@ -9,6 +9,7 @@ use serde::{Serialize, Deserialize};
 use tokio::io::AsyncReadExt;
 use md5;
 
+// Define server options
 #[derive(Debug)]
 struct ServerOptions{
   address: String,
@@ -17,6 +18,7 @@ struct ServerOptions{
   key: String,
 }
 
+// Define message types
 #[derive(Debug, Serialize, Deserialize)]
 #[repr(u8)]
 pub enum MessageType {
@@ -28,6 +30,7 @@ pub enum MessageType {
     DownloadRequest(String),
 }
 
+// Define Protocol Data Unit (PDU)
 #[derive(Debug, Serialize, Deserialize)]
 struct PDU {
     msg_type: MessageType,
@@ -38,29 +41,36 @@ struct PDU {
     filename: String,
 }
 
+// Implement methods for PDU
 impl PDU {
+    // Convert PDU to bytes
     fn to_bytes(&self) -> Result<Vec<u8>, Box<bincode::ErrorKind>> {
         bincode::serialize(self)
     }
 
+    // Convert bytes to PDU
     fn from_bytes(bytes: Vec<u8>) -> Result<Self, Box<bincode::ErrorKind>> {
         bincode::deserialize(&bytes)
     }
 }
 
+// Main function to run the server
 #[tokio::main]
 async fn run(options: ServerOptions) -> Result<()>  {
-
+  // Format the host and port string
   let host_port_string = format!("{}:{}",
     options.address, options.port).to_socket_addrs()?.next().unwrap();
+  // Start the server
   let mut server = Server::builder()
         .with_tls((Path::new(&options.cert), Path::new(&options.key)))?
         .with_io(host_port_string)?
         .start()?;
   println!("{:#?} In server...", options);
+  // Accept new connections
   while let Some(mut connection) = server.accept().await {
     println!("Accepted a new connection");
     tokio::spawn(async move {
+        // Accept new bidirectional streams
         while let Ok(Some(mut stream)) = connection.accept_bidirectional_stream().await {
             println!("Accepted a new bidirectional stream");
             tokio::spawn(async move {
@@ -143,8 +153,8 @@ async fn run(options: ServerOptions) -> Result<()>  {
                             println!("The stream has been closed by the client");
                             break;
                         }
-                        Err(e) => {
-                            eprintln!("Connection Closed  {}", e);
+                        Err(_e) => {
+                            eprintln!("Connection Closed by the Client");
                             break;
                         }
                     }
@@ -157,8 +167,10 @@ async fn run(options: ServerOptions) -> Result<()>  {
   Ok(())
 }
 
+// Default port for the server
 const DEFAULT_PORT: u16 = 54321;
 
+// Function to start the server
 pub fn do_server(address: String, cert:String, key:String) -> Result<()> {
   println!("Starting server...");
   println!("Listening on {address} using port {DEFAULT_PORT}...");

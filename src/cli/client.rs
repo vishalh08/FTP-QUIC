@@ -10,6 +10,7 @@ use serde::{Serialize, Deserialize};
 use std::io::{stdin, stdout, Write};
 use md5;
 
+// Define client options
 #[derive(Debug)]
 struct ClientOptions{
   address: String,
@@ -17,6 +18,7 @@ struct ClientOptions{
   cert: String,
 }
 
+// Define message types
 #[derive(Debug, Serialize, Deserialize)]
 #[repr(u8)]
 pub enum MessageType {
@@ -28,6 +30,7 @@ pub enum MessageType {
     DownloadRequest(String),
 }
 
+// Define Protocol Data Unit (PDU)
 #[derive(Debug, Serialize, Deserialize)]
 struct PDU {
     msg_type: MessageType,
@@ -38,18 +41,23 @@ struct PDU {
     filename: String,
 }
 
+// Implement methods for PDU
 impl PDU {
+    // Convert PDU to bytes
     fn to_bytes(&self) -> Result<Vec<u8>, Box<bincode::ErrorKind>> {
         bincode::serialize(self)
     }
 
+    // Convert bytes to PDU
     fn from_bytes(bytes: Vec<u8>) -> Result<Self, Box<bincode::ErrorKind>> {
         bincode::deserialize(&bytes)
     }
 }
 
+// Main function to run the client
 #[tokio::main]
 async fn run(options:ClientOptions) -> Result<()> {
+    // Format the host and port string
     let host_port_string = format!("{}:{}",
       options.address, options.port).to_socket_addrs()?.next().unwrap();
 
@@ -196,9 +204,10 @@ async fn run(options:ClientOptions) -> Result<()> {
     Ok(())
 }
 
-
+// Default port for the server
 const DEFAULT_PORT: u16 = 54321;
 
+// Function to start the client
 pub fn do_client(address: String, cert: String) -> Result<()> {
   println!("Starting client...");
   println!("Connecting to {address} on port {DEFAULT_PORT}...");

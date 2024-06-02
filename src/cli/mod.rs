@@ -12,7 +12,7 @@ pub(crate) fn get_cli_matches() -> ArgMatches {
     .long("address")
     .value_name("IP_ADDRESS")
     .env("ADDRESS")
-    .default_value("0.0.0.0")
+    .default_value("127.0.0.1")
     .help("address to use for connections");
 
   let shared_port_arg = Arg::new("port")

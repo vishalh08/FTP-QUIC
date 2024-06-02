@@ -47,3 +47,5 @@ cargo run -- server --cert ./certs/server.crt --key ./certs/server.key
 command to run client
 
 cargo run --bin quicrs -- client --address 127.0.0.1 --cert ./certs/ca.cert
+
+https://youtu.be/1BJ5SHsx2hk
