@@ -33,7 +33,7 @@ struct PDU {
     msg_type: MessageType,
     length: u32,
     sequence_number: u32,
-    checksum: String, // Change this line
+    checksum: String,
     data: Vec<u8>,
     filename: String,
 }
@@ -102,7 +102,7 @@ async fn run(options:ClientOptions) -> Result<()> {
                     msg_type: MessageType::Data,
                     length: buffer.len() as u32,
                     sequence_number: sequence_number,
-                    checksum: format!("{:x}", md5::compute(&buffer)), // Change this line
+                    checksum: format!("{:x}", md5::compute(&buffer)),
                     data: buffer,
                     filename: filename.to_string(),
                 };
@@ -145,9 +145,9 @@ async fn run(options:ClientOptions) -> Result<()> {
                     msg_type: MessageType::DownloadRequest(filename.to_string()),
                     length: 0,
                     sequence_number: sequence_number,
-                    checksum: String::new(), // Change this line
+                    checksum: String::new(),
                     data: vec![],
-                    filename: String::new(), // Add this line
+                    filename: String::new(),
                 };
                 println!("Sending PDU: {:?}", pdu);
                 sequence_number += 1;
@@ -168,14 +168,13 @@ async fn run(options:ClientOptions) -> Result<()> {
                     }
                 };
                 let pdu: PDU = PDU::from_bytes(rdata.to_vec()).unwrap();
-                println!("Received PDU: {:?}", pdu); // This will now include the sequence number
-                // Calculate the checksum of the received data
-                let calculated_checksum = format!("{:x}", md5::compute(&pdu.data)); // Change this line
+                println!("Received PDU: {:?}", pdu);
+                let calculated_checksum = format!("{:x}", md5::compute(&pdu.data));
 
                 // Compare it with the checksum in the PDU
                 if pdu.checksum == calculated_checksum {
                     // If they match, write the data to a file
-                    let mut file = File::create(&pdu.filename).await.unwrap(); // Use the filename from the PDU
+                    let mut file = File::create(&pdu.filename).await.unwrap();
                     file.write_all(&pdu.data).await.unwrap();
                     println!("Received a valid file from the server and wrote it to {}", pdu.filename);
                 } else {
@@ -198,7 +197,7 @@ async fn run(options:ClientOptions) -> Result<()> {
 }
 
 
-const DEFAULT_PORT: u16 = 54321; // This should be the same as the server's port
+const DEFAULT_PORT: u16 = 54321;
 
 pub fn do_client(address: String, cert: String) -> Result<()> {
   println!("Starting client...");
@@ -214,4 +213,3 @@ pub fn do_client(address: String, cert: String) -> Result<()> {
 
   Ok(())
 }
-

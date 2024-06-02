@@ -33,7 +33,7 @@ struct PDU {
     msg_type: MessageType,
     length: u32,
     sequence_number: u32,
-    checksum: String, // Change this line
+    checksum: String,
     data: Vec<u8>,
     filename: String,
 }
@@ -71,9 +71,9 @@ async fn run(options: ServerOptions) -> Result<()>  {
                             println!("Received PDU: {:?}", pdu);
                             match pdu.msg_type {
                                 MessageType::Data => {
-                                    let calculated_checksum = format!("{:x}", md5::compute(&pdu.data)); // Change this line
+                                    let calculated_checksum = format!("{:x}", md5::compute(&pdu.data));
                                     if pdu.checksum == calculated_checksum {
-                                        let mut file = File::create(&pdu.filename).await.unwrap(); // Use the filename from the PDU
+                                        let mut file = File::create(&pdu.filename).await.unwrap();
                                         file.write_all(&pdu.data).await.unwrap();
                                         println!("Received a valid file from the client and wrote it to {}", pdu.filename);
 
@@ -82,7 +82,7 @@ async fn run(options: ServerOptions) -> Result<()>  {
                                             msg_type: MessageType::Response,
                                             length: 0,
                                             sequence_number: 0,
-                                            checksum: String::new(), // Change this line
+                                            checksum: String::new(),
                                             data: vec![],
                                             filename: String::new(),
                                         };
@@ -105,7 +105,7 @@ async fn run(options: ServerOptions) -> Result<()>  {
                                         msg_type: MessageType::Data,
                                         length: buffer.len() as u32,
                                         sequence_number: 0,
-                                        checksum: format!("{:x}", md5::compute(&buffer)), // Change this line
+                                        checksum: format!("{:x}", md5::compute(&buffer)),
                                         data: buffer,
                                         filename: filename.to_string(),
                                     };
@@ -122,7 +122,7 @@ async fn run(options: ServerOptions) -> Result<()>  {
                                         msg_type: MessageType::Response,
                                         length: 0,
                                         sequence_number: 0,
-                                        checksum: String::new(), // Change this line
+                                        checksum: String::new(),
                                         data: vec![],
                                         filename: String::new(),
                                     };
@@ -157,7 +157,7 @@ async fn run(options: ServerOptions) -> Result<()>  {
   Ok(())
 }
 
-const DEFAULT_PORT: u16 = 54321; // You can choose any valid port number
+const DEFAULT_PORT: u16 = 54321;
 
 pub fn do_server(address: String, cert:String, key:String) -> Result<()> {
   println!("Starting server...");
@@ -174,4 +174,3 @@ pub fn do_server(address: String, cert:String, key:String) -> Result<()> {
 
   Ok(())
 }
-

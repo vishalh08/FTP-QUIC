@@ -6,7 +6,7 @@ pub(crate) mod protocol{
   pub mod echo;
 }
 
-const DEFAULT_PORT: u16 = 54321; // You can choose any valid port number
+
 
 fn main() -> Result<()> {
   color_eyre::install()?;
