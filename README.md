@@ -2,7 +2,7 @@
 
 # Overview
 
-This project is all about a FTP using QUIC made with Rust.
+FTP-QUIC is a project that implements a File Transfer Protocol (FTP) using the QUIC protocol. It is developed using the Rust programming language.
 
 # Features
 
