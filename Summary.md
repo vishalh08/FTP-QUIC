@@ -1,6 +1,6 @@
 - Implementing the FTP client and server using the QUIC protocol provided a comprehensive understanding of networking protocols, data transfer over the internet.
 - The benefits of QUIC, such as reduced latency and improved congestion control, were realized, along with its increasing adoption for real-time applications.
-- The project emphasized the importance of robust error handling mechanisms and the use of tokio for asynchronous I/O operations, which is crucial for handling multiple client connections simultaneously.
+- The project emphasized the importance of the tokio libarary for asynchronous I/O operations, which is crucial for handling multiple client connections simultaneously. And also learned about other 3rd party libraries
 - Security features like checksums for data integrity and certificates for server authentication were incorporated, highlighting the importance of efficient computation and real-time integrity checks for enhancing reliability and security in network programming.
 - The project provided experience in creating modular, reusable, and maintainable code through the design of the PDU structure and the upload/download mechanisms.
 - Debugging network code and testing the FTP service under different conditions improved my problem-solving skills.
